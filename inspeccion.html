@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de Inspección de Maquinaria</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script src="https://unpkg.com/@tailwindcss/browser@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <style>
+        /* Estilos personalizados para el mensaje de éxito */
+        #mensaje-exito {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            z-index: 1000;
+        }
+        /* Estilos para la tabla */
+        .table-auto {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .table-auto th,
+        .table-auto td {
+            border: 1px solid #e5e7eb;
+            padding: 8px;
+            text-align: left;
+        }
+        .table-auto th {
+            background-color: #f9fafb;
+            font-weight: 600;
+        }
+        .table-auto tbody tr:nth-child(odd) {
+            background-color: #ffffff;
+        }
+        .table-auto tbody tr:nth-child(even) {
+            background-color: #f3f4f6;
+        }
+        /* Estilos para el menú superior */
+        .top-menu {
+            background-color: #4a5568;
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 100;
+        }
+
+        .top-menu .logo {
+            height: 50px;
+        }
+
+        .top-menu nav {
+            display: flex;
+            gap: 10px;
+        }
+
+        .top-menu nav a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+
+        .top-menu nav a:hover {
+            background-color: #2d3748;
+        }
+        /* Ajuste para el contenido principal para que no se superponga con el menú */
+        .main-content {
+            margin-top: 70px;
+            padding: 20px;
+            min-height: calc(100vh - 140px);
+            display: flex;
+            flex-direction: column;
+        }
+        /* Estilos para el pie de página */
+        .footer {
+            color: #6b7280;
+            font-size: 0.75rem;
+            text-align: center;
+            padding-top: 1rem;
+            border-top: 1px solid #e5e7eb;
+            margin-top: auto;
+            width: 100%;
+        }
+
+        .footer a {
+            color: #3b82f6;
+            text-decoration: underline;
+        }
+        .autocomplete {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .autocomplete-items {
+            position: absolute;
+            border: 1px solid #d4d4d4;
+            border-bottom: none;
+            border-top: none;
+            z-index: 99;
+            top: 100%;
+            left: 0;
+            right: 0;
+            max-height: 200px;
+            overflow-y: auto;
+            background-color: white;
+        }
+
+        .autocomplete-items div {
+            padding: 10px;
+            cursor: pointer;
+            background-color: #fff;
+            border-bottom: 1px solid #d4d4d4;
+        }
+
+        .autocomplete-items div:hover {
+            background-color: #eee;
+        }
+
+        .autocomplete-active {
+            background-color: #4CAF50 !important;
+            color: #fff;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-inter">
+    <div class="top-menu">
+        <img src="https://images.squarespace-cdn.com/content/v1/58a36221d482e9bca4af6eac/34694fc3-6f92-4054-8a58-3776436c00dc/IMG_9869+2.PNG?format=2500w" alt="Logo de la empresa" class="logo">
+        <nav>
+            <a href="inventario.html">HOME</a>
+            <a href="inspeccion.html">Inspección Técnica</a>
+            <a href="mantenimiento.html">Mantenimientos</a>
+        </nav>
+    </div>
+
+    <div class="main-content container mx-auto p-4 md:p-8">
+        <h1 class="text-3xl font-semibold text-gray-800 text-center mb-6">Formulario de Inspección de Maquinaria</h1>
+
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <h2 class="text-xl font-semibold text-gray-700 mb-4">Detalles de la Inspección</h2>
+            <form id="form-inspeccion" class="space-y-4">
+                <div>
+                    <label for="nombre-maquina" class="block text-gray-600 text-sm font-bold mb-2">Nombre de la Máquina:</label>
+                     <div class="autocomplete">
+                        <input type="text" id="nombre-maquina" name="nombre-maquina" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                    </div>
+                    <div id="nombre-maquina-error" class="text-red-500 text-xs italic" style="display: none;"></div>
+                </div>
+                <div>
+                    <label for="linea-produccion" class="block text-gray-600 text-sm font-bold mb-2">Línea de Producción:</label>
+                    <input type="text" id="linea-produccion" name="linea-produccion" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                </div>
+                <div>
+                    <label for="fecha-inspeccion" class="block text-gray-600 text-sm font-bold mb-2">Fecha de Inspección:</label>
+                    <input type="date" id="fecha-inspeccion" name="fecha-inspeccion" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                </div>
+                <div>
+                    <label for="inspector" class="block text-gray-600 text-sm font-bold mb-2">Inspector:</label>
+                    <input type="text" id="inspector" name="inspector" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                </div>
+
+                <h3 class="text-lg font-semibold text-gray-700 mt-4">Síntomas Encontrados</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <input type="checkbox" id="sintoma-1" name="sintoma-1">
+                        <label for="sintoma-1" class="ml-2 text-gray-700">Ruido Anormal</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="sintoma-2" name="sintoma-2">
+                        <label for="sintoma-2" class="ml-2 text-gray-700">Vibración Excesiva</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="sintoma-3" name="sintoma-3">
+                        <label for="sintoma-3" class="ml-2 text-gray-700">Fugas de Líquido</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="sintoma-4" name="sintoma-4">
+                        <label for="sintoma-4" class="ml-2 text-gray-700">Sobrecalentamiento</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="sintoma-5" name="sintoma-5">
+                        <label for="sintoma-5" class="ml-2 text-gray-700">Olor a Quemado</label>
+                    </div>
+                     <div>
+                        <input type="checkbox" id="sintoma-6" name="sintoma-6">
+                        <label for="sintoma-6" class="ml-2 text-gray-700">Humo</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="sintoma-7" name="sintoma-7">
+                        <label for="sintoma-7" class="ml-2 text-gray-700">Corrosión</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="sintoma-8" name="sintoma-8">
+                        <label for="sintoma-8" class="ml-2 text-gray-700">Desgaste Irregular</label>
+                    </div>
+                </div>
+
+                <h3 class="text-lg font-semibold text-gray-700 mt-4">Estado de Componentes</h3>
+                <div>
+                    <label for="estado-motor" class="block text-gray-600 text-sm font-bold mb-2">Motor:</label>
+                    <select id="estado-motor" name="estado-motor" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                        <option value="" disabled selected>Seleccione el estado</option>
+                        <option value="operativo">Operativo</option>
+                        <option value="ruido-anormal">Ruido Anormal</option>
+                        <option value="vibracion-excesiva">Vibración Excesiva</option>
+                        <option value="sobrecalentamiento">Sobrecalentamiento</option>
+                        <option value="falla-arranque">Falla en el Arranque</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="estado-transmision" class="block text-gray-600 text-sm font-bold mb-2">Transmisión:</label>
+                    <select id="estado-transmision" name="estado-transmision" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                        <option value="" disabled selected>Seleccione el estado</option>
+                        <option value="operativo">Operativo</option>
+                        <option value="desgaste">Desgaste</option>
+                        <option value="ruido-anormal">Ruido Anormal</option>
+                        <option value="vibracion-excesiva">Vibración Excesiva</option>
+                        <option value="fuga-aceite">Fuga de Aceite</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="estado-sistema-hidraulico" class="block text-gray-600 text-sm font-bold mb-2">Sistema Hidráulico:</label>
+                    <select id="estado-sistema-hidraulico" name="estado-sistema-hidraulico" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                        <option value="" disabled selected>Seleccione el estado</option>
+                        <option value="operativo">Operativo</option>
+                        <option value="fugas">Fugas</option>
+                        <option value="presion-baja">Presión Baja</option>
+                        <option value="ruido-anormal">Ruido Anormal</option>
+                        <option value="contaminacion-aceite">Contaminación del Aceite</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="estado-sistema-neumatico" class="block text-gray-600 text-sm font-bold mb-2">Sistema Neumático:</label>
+                    <select id="estado-sistema-neumatico" name="estado-sistema-neumatico" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                        <option value="" disabled selected>Seleccione el estado</option>
+                        <option value="operativo">Operativo</option>
+                        <option value="fugas-aire">Fugas de Aire</option>
+                        <option value="presion-baja">Presión Baja</option>
+                         <option value="ruido-anormal">Ruido Anormal</option>
+                        <option value="contaminacion">Contaminación</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="estado-sistema-electrico" class="block text-gray-600 text-sm font-bold mb-2">Sistema Eléctrico:</label>
+                    <select id="estado-sistema-electrico" name="estado-sistema-electrico" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                        <option value="" disabled selected>Seleccione el estado</option>
+                        <option value="operativo">Operativo</option>
+                        <option value="cableado-dañado">Cableado Dañado</option>
+                        <option value="conexiones-flojas">Conexiones Flojas</option>
+                        <option value="fallas-sensor">Fallas en Sensores</option>
+                        <option value="cortocircuito">Cortocircuito</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="observaciones" class="block text-gray-600 text-sm font-bold mb-2">Observaciones:</label>
+                    <textarea id="observaciones" name="observaciones" rows="4" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"></textarea>
+                </div>
+
+                <div>
+                    <label for="foto" class="block text-gray-600 text-sm font-bold mb-2">Foto:</label>
+                    <input type="file" id="foto" name="foto" accept="image/*" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                </div>
+
+                <div>
+                    <label for="estado-accion" class="block text-gray-600 text-sm font-bold mb-2">Estado de Acción:</label>
+                    <select id="estado-accion" name="estado-accion" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                        <option value="" disabled selected>Seleccione el estado de acción</option>
+                        <option value="pendiente">Pendiente a realizar</option>
+                        <option value="necesita-mantenimiento-inmediato">Necesita Mantenimiento Inmediato</option>
+                        <option value="mantenimiento-programado">Mantenimiento Programado</option>
+                        <option value="operativo">Operativo</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Guardar Inspección</button>
+            </form>
+            <div id="mensaje-exito" class="mt-4">Inspección guardada correctamente</div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-md p-6 mt-8">
+            <h2 class="text-xl font-semibold text-gray-700 mb-4">Historial de Mantenimiento</h2>
+            <div class="filter-container">
+                <div>
+                    <label for="filtro-maquina">Filtrar por Máquina:</label>
+                    <input type="text" id="filtro-maquina">
+                </div>
+                <div>
+                    <label for="filtro-estado-accion">Filtrar por Estado de Acción:</label>
+                    <select id="filtro-estado-accion">
+                        <option value="">Todos</option>
+                        <option value="pendiente">Pendiente a realizar</option>
+                        <option value="necesita-mantenimiento-inmediato">Necesita Mantenimiento Inmediato</option>
+                        <option value="mantenimiento-programado">Mantenimiento Programado</option>
+                        <option value="operativo">Operativo</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="filtro-fecha-desde">Filtrar desde:</label>
+                    <input type="date" id="filtro-fecha-desde">
+                </div>
+            </div>
+            <table id="tabla-historial" class="table-auto">
+                <thead>
+                    <tr>
+                        <th class="px-4 py-2">Máquina</th>
+                        <th class="px-4 py-2">Fecha Inspección</th>
+                        <th class="px-4 py-2">Inspector</th>
+                        <th class="px-4 py-2">Síntomas</th>
+                        <th class="px-4 py-2">Estado Componentes</th>
+                        <th class="px-4 py-2">Observaciones</th>
+                        <th class="px-4 py-2">Estado de Acción</th>
+                        <th class="px-4 py-2">Foto</th>
+                    </tr>
+                </thead>
+                <tbody id="tabla-historial-body">
+                    <tr>
+                        <td colspan="8" class="px-4 py-2 text-center text-gray-500">No hay inspecciones en el historial.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>© 2024 GEOWAY, Technology-Based initiative - IBT. All rights reserved. Berlin - Germany <a href="https://geo-way.github.io/GeoWay.io/index.html">GEOWAY</a></p>
+    </footer>
+
+    <script>
+        // Inicializar Flatpickr
+        flatpickr(".datepicker", {
+            dateFormat: "Y-m-d",
+            allowInput: true,
+            onClose: function(selectedDates, dateStr, instance) {
+                // You can trigger validation here if needed
+                if (!dateStr) {
+                    instance.clear();
+                }
+            }
+        });
+
+        document.getElementById('form-inspeccion').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Aquí puedes agregar la lógica para enviar los datos del formulario a un servidor
+            // Por ejemplo, usando fetch o XMLHttpRequest
+
+            // Mostrar mensaje de éxito
+            const mensajeExito = document.getElementById("mensaje-exito");
+            mensajeExito.style.display = "block";
+
+            // Ocultar el mensaje después de 3 segundos
+            setTimeout(() => {
+                mensajeExito.style.display = "none";
+            }, 3000);
+
+            // Limpiar el formulario
+            this.reset();
+            cargarHistorialInspecciones(); // Actualizar la tabla al guardar una nueva inspección
+        });
+
+        // Autocomplete
+        function autocomplete(inp, arr) {
+            let currentFocus;
+            inp.addEventListener("input", function(e) {
+                let a, b, i, val = this.value;
+                closeAllLists();
+                if (!val) {
+                    return false;
+                }
+                currentFocus = -1;
+                a = document.createElement("DIV");
+                a.setAttribute("id", this.id + "autocomplete-list");
+                a.setAttribute("class", "autocomplete-items");
+                this.parentNode.appendChild(a);
+                for (i = 0; i < arr.length; i++) {
+                    if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {
+                        b = document.createElement("DIV");
+                        b.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>";
+                        b.innerHTML += arr[i].substr(val.length);
+                        b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
+                        b.addEventListener("click", function(e) {
+                            inp.value = this.getElementsByTagName("input")[0].value;
+                            closeAllLists();
+                        });
+                        a.appendChild(b);
+                    }
+                }
+            });
+
+            inp.addEventListener("keydown", function(e) {
+                let x = document.getElementById(this.id + "autocomplete-list");
+                if (x) x = x.getElementsByTagName("div");
+                if (e.keyCode == 40) {
+                    currentFocus++;
+                    addActive(x);
+                } else if (e.keyCode == 38) {
+                    currentFocus--;
+                    addActive(x);
+                } else if (e.keyCode == 13) {
+                    e.preventDefault();
+                    if (currentFocus > -1) {
+                        if (x) x[currentFocus].click();
+                    }
+                }
+            });
+
+            function addActive(x) {
+                if (!x) return false;
+                removeActive(x);
+                if (currentFocus >= x.length) currentFocus = 0;
+                if (currentFocus < 0) currentFocus = (x.length - 1);
+                x[currentFocus].classList.add("autocomplete-active");
+            }
+
+            function removeActive(x) {
+                for (let i = 0; i < x.length; i++) {
+                    x[i].classList.remove("autocomplete-active");
+                }
+            }
+
+            function closeAllLists(elmnt) {
+                let x = document.getElementsByClassName("autocomplete-items");
+                for (let i = 0; i < x.length; i++) {
+                    if (elmnt != x[i] && elmnt != inp) {
+                        x[i].parentNode.removeChild(x[i]);
+                    }
+                }
+            }
+
+            document.addEventListener("click", function(e) {
+                closeAllLists(e.target);
+            });
+        }
+
+        // Datos de ejemplo para autocompletar (puedes obtenerlos de tu base de datos)
+        let nombresMaquinas = [
+            "Cortadora de Bloques",
+            "Desmenuzadora de Espuma",
+            "Mesa de Ensamblaje",
+            "Máquina de Coser Ribetes",
+            "Empaquetadora Automática",
+            "Máquina de Resorte Ensacado",
+            "Laminadora de Telas",
+            "Bordadora Computarizada",
+            "Prensa Hidráulica",
+            "Transportador de Rodillos"
+        ];
+
+        // Inicializar autocompletado
+        autocomplete(document.getElementById("nombre-maquina"), nombresMaquinas);
+
+       // Función para obtener los datos del formulario de inspección
+        function obtenerDatosInspeccion() {
+            const sintomasSeleccionados = [];
+            document.querySelectorAll('input[type="checkbox"]:checked').forEach(checkbox => {
+                sintomasSeleccionados.push(checkbox.nextElementSibling.textContent);
+            });
+
+            return {
+                nombreMaquina: document.getElementById("nombre-maquina").value,
+                lineaProduccion: document.getElementById("linea-produccion").value,
+                fechaInspeccion: document.getElementById("fecha-inspeccion").value,
+                inspector: document.getElementById("inspector").value,
+                sintomas: sintomasSeleccionados.join(", "),
+                estadoMotor: document.getElementById("estado-motor").value,
+                estadoTransmision: document.getElementById("estado-transmision
