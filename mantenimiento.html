@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de Mantenimiento de Maquinaria</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script src="https://unpkg.com/@tailwindcss/browser@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <style>
+        /* Estilos personalizados para el mensaje de éxito */
+        #mensaje-exito {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            z-index: 1000;
+        }
+        /* Estilos para la tabla */
+        .table-auto {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .table-auto th,
+        .table-auto td {
+            border: 1px solid #e5e7eb;
+            padding: 8px;
+            text-align: left;
+        }
+        .table-auto th {
+            background-color: #f9fafb;
+            font-weight: 600;
+        }
+        .table-auto tbody tr:nth-child(odd) {
+            background-color: #ffffff;
+        }
+        .table-auto tbody tr:nth-child(even) {
+            background-color: #f3f4f6;
+        }
+        /* Estilos para el menú superior */
+        .top-menu {
+            background-color: #4a5568;
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 100;
+        }
+
+        .top-menu .logo {
+            height: 50px;
+        }
+
+        .top-menu nav {
+            display: flex;
+            gap: 10px;
+        }
+
+        .top-menu nav a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+
+        .top-menu nav a:hover {
+            background-color: #2d3748;
+        }
+        /* Ajuste para el contenido principal para que no se superponga con el menú */
+        .main-content {
+            margin-top: 70px;
+            padding: 20px;
+            min-height: calc(100vh - 140px);
+            display: flex;
+            flex-direction: column;
+        }
+        /* Estilos para el pie de página */
+        .footer {
+            color: #6b7280;
+            font-size: 0.75rem;
+            text-align: center;
+            padding-top: 1rem;
+            border-top: 1px solid #e5e7eb;
+            margin-top: auto;
+            width: 100%;
+        }
+
+        .footer a {
+            color: #3b82f6;
+            text-decoration: underline;
+        }
+        .autocomplete {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .autocomplete-items {
+            position: absolute;
+            border: 1px solid #d4d4d4;
+            border-bottom: none;
+            border-top: none;
+            z-index: 99;
+            top: 100%;
+            left: 0;
+            right: 0;
+            max-height: 200px;
+            overflow-y: auto;
+            background-color: white;
+        }
+
+        .autocomplete-items div {
+            padding: 10px;
+            cursor: pointer;
+            background-color: #fff;
+            border-bottom: 1px solid #d4d4d4;
+        }
+
+        .autocomplete-items div:hover {
+            background-color: #eee;
+        }
+
+        .autocomplete-active {
+            background-color: #4CAF50 !important;
+            color: #fff;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-inter">
+    <div class="top-menu">
+        <img src="https://images.squarespace-cdn.com/content/v1/58a36221d482e9bca4af6eac/34694fc3-6f92-4054-8a58-3776436c00dc/IMG_9869+2.PNG?format=2500w" alt="Logo de la empresa" class="logo">
+        <nav>
+            <a href="index.html">HOME</a>
+            <a href="inspeccion.html">Inspección Técnica</a>
+            <a href="#">Mantenimientos</a>
+        </nav>
+    </div>
+
+    <div class="main-content container mx-auto p-4 md:p-8">
+        <h1 class="text-3xl font-semibold text-gray-800 text-center mb-6">Formulario de Mantenimiento de Maquinaria</h1>
+
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <h2 class="text-xl font-semibold text-gray-700 mb-4">Detalles del Mantenimiento</h2>
+            <form id="form-mantenimiento" class="space-y-4">
+                <div>
+                    <label for="nombre-maquina" class="block text-gray-600 text-sm font-bold mb-2">Nombre de la Máquina:</label>
+                     <div class="autocomplete">
+                        <input type="text" id="nombre-maquina" name="nombre-maquina" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                    </div>
+                    <div id="nombre-maquina-error" class="text-red-500 text-xs italic" style="display: none;"></div>
+                </div>
+                <div>
+                    <label for="linea-produccion" class="block text-gray-600 text-sm font-bold mb-2">Línea de Producción:</label>
+                    <input type="text" id="linea-produccion" name="linea-produccion" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                </div>
+                <div>
+                    <label for="fecha-mantenimiento" class="block text-gray-600 text-sm font-bold mb-2">Fecha de Mantenimiento:</label>
+                    <input type="date" id="fecha-mantenimiento" name="fecha-mantenimiento" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                </div>
+                <div>
+                    <label for="tipo-mantenimiento" class="block text-gray-600 text-sm font-bold mb-2">Tipo de Mantenimiento:</label>
+                    <select id="tipo-mantenimiento" name="tipo-mantenimiento" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                        <option value="" disabled selected>Seleccione el tipo de mantenimiento</option>
+                        <option value="preventivo">Preventivo</option>
+                        <option value="correctivo">Correctivo</option>
+                        <option value="predictivo">Predictivo</option>
+                        <option value="rutina">Mantenimiento de Rutina</option>
+                        <option value="emergencia">Mantenimiento de Emergencia</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="descripcion-trabajo" class="block text-gray-600 text-sm font-bold mb-2">Descripción del Trabajo Realizado:</label>
+                    <textarea id="descripcion-trabajo" name="descripcion-trabajo" rows="4" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required></textarea>
+                </div>
+                 <div>
+                    <label for="repuestos-utilizados" class="block text-gray-600 text-sm font-bold mb-2">Repuestos Utilizados:</label>
+                    <input type="text" id="repuestos-utilizados" name="repuestos-utilizados"  class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" >
+                </div>
+                <div>
+                    <label for="tiempo-parada" class="block text-gray-600 text-sm font-bold mb-2">Tiempo de Parada de la Máquina (horas):</label>
+                    <input type="number" id="tiempo-parada" name="tiempo-parada" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                </div>
+                <div>
+                    <label for="costo-mantenimiento" class="block text-gray-600 text-sm font-bold mb-2">Costo del Mantenimiento (USD):</label>
+                    <input type="number" id="costo-mantenimiento" name="costo-mantenimiento" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                </div>
+                <div>
+                    <label for="tecnico-asignado" class="block text-gray-600 text-sm font-bold mb-2">Técnico Asignado:</label>
+                    <input type="text" id="tecnico-asignado" name="tecnico-asignado" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                </div>
+                <div>
+                    <label for="observaciones" class="block text-gray-600 text-sm font-bold mb-2">Observaciones:</label>
+                    <textarea id="observaciones" name="observaciones" rows="4" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"></textarea>
+                </div>
+                <div>
+                    <label for="foto-mantenimiento" class="block text-gray-600 text-sm font-bold mb-2">Foto del Mantenimiento:</label>
+                    <input type="file" id="foto-mantenimiento" name="foto-mantenimiento" accept="image/*" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                </div>
+
+                <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Guardar Mantenimiento</button>
+            </form>
+            <div id="mensaje-exito" class="mt-4">Mantenimiento guardado correctamente</div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-md p-6 mt-8">
+            <h2 class="text-xl font-semibold text-gray-700 mb-4">Historial de Mantenimiento</h2>
+            <div class="filter-container flex flex-wrap gap-4 mb-4">
+                <div>
+                    <label for="filtro-maquina" class="block text-gray-600 text-sm font-bold mb-2">Filtrar por Máquina:</label>
+                    <input type="text" id="filtro-maquina" name="filtro-maquina" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                </div>
+                <div>
+                    <label for="filtro-tipo-mantenimiento" class="block text-gray-600 text-sm font-bold mb-2">Filtrar por Tipo de Mantenimiento:</label>
+                    <select id="filtro-tipo-mantenimiento" name="filtro-tipo-mantenimiento" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        <option value="">Todos</option>
+                        <option value="preventivo">Preventivo</option>
+                        <option value="correctivo">Correctivo</option>
+                        <option value="predictivo">Predictivo</option>
+                        <option value="rutina">Mantenimiento de Rutina</option>
+                        <option value="emergencia">Mantenimiento de Emergencia</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="filtro-fecha-desde" class="block text-gray-600 text-sm font-bold mb-2">Filtrar desde:</label>
+                    <input type="date" id="filtro-fecha-desde" name="filtro-fecha-desde" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                </div>
+                 <div>
+                    <label for="filtro-fecha-hasta" class="block text-gray-600 text-sm font-bold mb-2">Filtrar hasta:</label>
+                    <input type="date" id="filtro-fecha-hasta" name="filtro-fecha-hasta" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                </div>
+                <div>
+                    <button id="btn-buscar" type="button" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Buscar</button>
+                </div>
+                <div>
+                    <button id="btn-imprimir" type="button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Imprimir Informe</button>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table id="tabla-historial-mantenimiento" class="table-auto">
+                    <thead>
+                        <tr>
+                            <th class="px-4 py-2">Fecha Mantenimiento</th>
+                            <th class="px-4 py-2">Máquina</th>
+                            <th class="px-4 py-2">Línea Producción</th>
+                            <th class="px-4 py-2">Tipo Mantenimiento</th>
+                            <th class="px-4 py-2">Descripción Trabajo</th>
+                            <th class="px-4 py-2">Repuestos Utilizados</th>
+                            <th class="px-4 py-2">Tiempo Parada (horas)</th>
+                            <th class="px-4 py-2">Costo (USD)</th>
+                            <th class="px-4 py-2">Técnico Asignado</th>
+                            <th class="px-4 py-2">Observaciones</th>
+                            <th class="px-4 py-2">Foto</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-historial-mantenimiento-body">
+                        <tr>
+                            <td colspan="11" class="px-4 py-2 text-center text-gray-500">No hay mantenimientos en el historial.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>© 2024 GEOWAY, Technology-Based initiative - IBT. All rights reserved. Berlin - Germany <a href="https://geo-way.github.io/GeoWay.io/index.html">GEOWAY</a></p>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script>
+        // Inicializar Flatpickr
+        flatpickr(".datepicker", {
+            dateFormat: "Y-m-d",
+            allowInput: true,
+             onClose: function(selectedDates, dateStr, instance) {
+                // You can trigger validation here if needed
+                if (!dateStr) {
+                    instance.clear();
+                }
+            }
+        });
+
+        document.getElementById('form-mantenimiento').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Aquí puedes agregar la lógica para enviar los datos del formulario a un servidor
+            // Por ejemplo, usando fetch o XMLHttpRequest
+
+            // Mostrar mensaje de éxito
+            const mensajeExito = document.getElementById("mensaje-exito");
+            mensajeExito.style.display = "block";
+
+            // Ocultar el mensaje después de 3 segundos
+            setTimeout(() => {
+                mensajeExito.style.display = "none";
+            }, 3000);
+
+            // Limpiar el formulario
+            this.reset();
+            agregarMantenimientoAlHistorial();
+            cargarHistorialMantenimiento(); // Actualizar la tabla al guardar un nuevo mantenimiento
+        });
+
+         // Autocomplete
+        function autocomplete(inp, arr) {
+            let currentFocus;
+            inp.addEventListener("input", function(e) {
+                let a, b, i, val = this.value;
+                closeAllLists();
+                if (!val) {
+                    return false;
+                }
+                currentFocus = -1;
+                a = document.createElement("DIV");
+                a.setAttribute("id", this.id + "autocomplete-list");
+                a.setAttribute("class", "autocomplete-items");
+                this.parentNode.appendChild(a);
+                for (i = 0; i < arr.length; i++) {
+                    if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {
+                        b = document.createElement("DIV");
+                        b.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>";
+                        b.innerHTML += arr[i].substr(val.length);
+                        b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
+                        b.addEventListener("click", function(e) {
+                            inp.value = this.getElementsByTagName("input")[0].value;
+                            closeAllLists();
+                        });
+                        a.appendChild(b);
+                    }
+                }
+            });
+
+            inp.addEventListener("keydown", function(e) {
+                let x = document.getElementById(this.id + "autocomplete-list");
+                if (x) x = x.getElementsByTagName("div");
+                if (e.keyCode == 40) {
+                    currentFocus++;
+                    addActive(x);
+                } else if (e.keyCode == 38) {
+                    currentFocus--;
+                    addActive(x);
+                } else if (e.keyCode == 13) {
+                    e.preventDefault();
+                    if (currentFocus > -1) {
+                        if (x) x[currentFocus].click();
+                    }
+                }
+            });
+
+            function addActive(x) {
+                if (!x) return false;
+                removeActive(x);
+                if (currentFocus >= x.length) currentFocus = 0;
+                if (currentFocus < 0) currentFocus = (x.length - 1);
+                x[currentFocus].classList.add("autocomplete-active");
+            }
+
+            function removeActive(x) {
+                for (let i = 0; i < x.length; i++) {
+                    x[i].classList.remove("autocomplete-active");
+                }
+            }
+
+            function closeAllLists(elmnt) {
+                let x = document.getElementsByClassName("autocomplete-items");
+                for (let i = 0; i < x.length; i++) {
+                    if (elmnt != x[i] && elmnt != inp) {
+                        x[i].parentNode.removeChild(x[i]);
+                    }
+                }
+            }
+
+            document.addEventListener("click", function(e) {
+                closeAllLists(e.target);
+            });
+        }
+
+        // Datos de ejemplo para autocompletar (puedes obtenerlos de tu base de datos)
+        let nombresMaquinas = [
+            "Cortadora de Bloques",
+            "Desmenuzadora de Espuma",
+            "Mesa de Ensamblaje",
+            "Máquina de Coser Ribetes",
+            "Empaquetadora Automática",
+            "Máquina de Resorte Ensacado",
+            "Laminadora de Telas",
+            "Bordadora Computarizada",
+            "Prensa Hidráulica",
+            "Transportador de Rodillos"
+        ];
+
+        // Inicializar autocompletado
+        autocomplete(document.getElementById("nombre-maquina"), nombresMaquinas);
+
+        let historialMantenimiento = [];  // Array para almacenar los datos del historial de mantenimiento
+
+        function obtenerDatosMantenimiento() {
+            let fotoMantenimientoValue = document.getElementById("foto-mantenimiento").value;
+            // Si no se selecciona un archivo, usa una cadena vacía
+            if (!fotoMantenimientoValue) {
+                fotoMantenimientoValue = "";
+            }
+            return {
+                fechaMantenimiento: document.getElementById("fecha-mantenimiento").value,
+                nombreMaquina: document.getElementById("nombre-maquina").value,
+                lineaProduccion: document.getElementById("linea-produccion").value,
+                tipoMantenimiento: document.getElementById("tipo-mantenimiento").value,
+                descripcionTrabajo: document.getElementById("descripcion-trabajo").value,
+                repuestosUtilizados: document.getElementById("repuestos-utilizados").value,
+                tiempoParada: document.getElementById("tiempo-parada").value,
+                costoMantenimiento: document.getElementById("costo-mantenimiento").value,
+                tecnicoAsignado: document.getElementById("tecnico-asignado").value,
+                observaciones: document.getElementById("observaciones").value,
+                fotoMantenimiento: fotoMantenimientoValue, // Por simplicidad, guardamos el nombre del archivo
+            };
+        }
+
+        function agregarMantenimientoAlHistorial() {
+            const nuevoMantenimiento = obtenerDatosMantenimiento();
+            historialMantenimiento.push(nuevoMantenimiento);
+            localStorage.setItem('historialMantenimiento', JSON.stringify(historialMantenimiento)); // Persistir en localStorage
+        }
+
+        function cargarHistorialMantenimiento() {
+            const historialGuardado = localStorage.getItem('historialMantenimiento');
+            if (historialGuardado) {
+                historialMantenimiento = JSON.parse(historialGuardado);
+            } else {
+                historialMantenimiento = [];
+            }
+            const tablaHistorialBody = document.getElementById("tabla-historial-mantenimiento-body");
+            tablaHistorialBody.innerHTML = ""; // Limpiar la tabla
+
+            if (historialMantenimiento.length === 0) {
+                tablaHistorialBody.innerHTML = '<tr><td colspan="11" class="px-4 py-2 text-center text-gray-500">No hay mantenimientos en el historial.</td></tr>';
+                return;
+            }
+
+            historialMantenimiento.forEach(mantenimiento => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td class="px-4 py-2">${mantenimiento.fechaMantenimiento}</td>
+                    <td class="px-4 py-2">${mantenimiento.nombreMaquina}</td>
+                    <td class="px-4 py-2">${mantenimiento.lineaProduccion}</td>
+                    <td class="px-4 py-2">${mantenimiento.tipoMantenimiento}</td>
+                    <td class="px-4 py-2">${mantenimiento.descripcionTrabajo}</td>
+                    <td class="px-4 py-2">${mantenimiento.repuestosUtilizados}</td>
+                    
